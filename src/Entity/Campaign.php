@@ -3,13 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\CampaignRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CampaignRepository::class)]
 class Campaign
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?string $id = null;
 
@@ -31,10 +32,26 @@ class Campaign
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $name = null;
 
+    #[ORM\OneToMany(mappedBy: 'campaign_id', targetEntity: Participant::class, orphanRemoval: true)]
+    private Collection $participants;
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+    }
+
     public function getId(): ?string
     {
         return $this->id;
     }
+
+    public function setId(): self
+    {  
+    $id = md5(random_bytes(50));
+    $this->id = $id;
+    return $this;
+    }
+
 
     public function getTitle(): ?string
     {
@@ -108,10 +125,33 @@ class Campaign
         return $this;
     }
 
-   
-    public function setId(?string $id): self
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getParticipants(): Collection
     {
-        $this->id = $id;
+        return $this->participants;
+    }
+
+    public function addParticipant(Participant $participant): static
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+            $participant->setCampaignId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Participant $participant): static
+    {
+        if ($this->participants->removeElement($participant)) {
+            // set the owning side to null (unless already changed)
+            if ($participant->getCampaignId() === $this) {
+                $participant->setCampaignId(null);
+            }
+        }
 
         return $this;
     }
