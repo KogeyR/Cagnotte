@@ -22,6 +22,26 @@ class CampaignController extends AbstractController
         ]);
     }
 
+    #[Route('/new', name: 'app_campaign_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $campaign = new Campaign();
+        $form = $this->createForm(CampaignType::class, $campaign);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $campaign->setId(); 
+            $entityManager->persist($campaign);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_campaign_show', ['id'=>$campaign->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('campaign/new.html.twig', [
+            'campaign' => $campaign,
+            'form' => $form,
+        ]);
+    }
 
     #[Route('/{id}', name: 'app_campaign_show', methods: ['GET'])]
     public function show(Campaign $campaign): Response
