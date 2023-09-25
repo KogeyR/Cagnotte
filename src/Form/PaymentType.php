@@ -13,7 +13,7 @@ class PaymentType extends AbstractType
     {
         $builder
             ->add('amount')
-            ->add('participant')
+            ->add('participant', ParticipantType::class)
         ;
     }
 

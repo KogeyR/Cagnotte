@@ -21,6 +21,20 @@ class PaymentRepository extends ServiceEntityRepository
         parent::__construct($registry, Payment::class);
     }
 
+    public function findParticipations(string $parameter) 
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT * FROM payment p
+            JOIN participant ON p.participant_id = participant.id
+            WHERE participant.campaign_id = :campaign_id
+            ';
+
+
+        $resultSet = $conn->executeQuery($sql, ['campaign_id' => $parameter]);
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
 //    /**
 //     * @return Payment[] Returns an array of Payment objects
 //     */
