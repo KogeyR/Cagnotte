@@ -68,12 +68,12 @@ class Payment
         return $this;
     }
 
-    public function getParticipantId(): ?Participant
+    public function getParticipant(): ?Participant
     {
         return $this->participant_id;
     }
 
-    public function setParticipantId(?Participant $participant_id): static
+    public function setParticipant(?Participant $participant_id): static
     {
         $this->participant_id = $participant_id;
 

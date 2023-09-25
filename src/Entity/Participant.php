@@ -57,12 +57,12 @@ class Participant
         return $this;
     }
 
-    public function getCampaignId(): ?Campaign
+    public function getCampaign(): ?Campaign
     {
         return $this->campaign_id;
     }
 
-    public function setCampaignId(?Campaign $campaign_id): static
+    public function setCampaign(?Campaign $campaign_id): static
     {
         $this->campaign_id = $campaign_id;
 
@@ -78,12 +78,12 @@ class Participant
     {
         // unset the owning side of the relation if necessary
         if ($payment === null && $this->payment !== null) {
-            $this->payment->setParticipantId(null);
+            $this->payment->setParticipant(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($payment !== null && $payment->getParticipantId() !== $this) {
-            $payment->setParticipantId($this);
+        if ($payment !== null && $payment->getParticipant() !== $this) {
+            $payment->setParticipant($this);
         }
 
         $this->payment = $payment;
